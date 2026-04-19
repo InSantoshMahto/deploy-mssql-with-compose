@@ -1,0 +1,13 @@
+# Environment variables
+.env*
+!.env.example
+
+# Backup files
+backups/*.bak
+backups/*.trn
+
+# Fody - auto-generated XML schema
+FodyWeavers.xsd
+
+# OS-specific files
+.DS_Store
