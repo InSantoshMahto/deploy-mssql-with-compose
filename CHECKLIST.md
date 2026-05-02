@@ -1,6 +1,6 @@
-# SQL Server 2019 Deployment Checklist
+# SQL Server 2019 Deployment Checklist (Podman)
 
-Use this checklist to ensure proper deployment of SQL Server 2019 on Docker.
+Use this checklist to ensure proper deployment of SQL Server 2019 on Podman.
 
 ## 📋 Pre-Deployment Checklist
 
@@ -9,19 +9,18 @@ Use this checklist to ensure proper deployment of SQL Server 2019 on Docker.
 - [ ] Minimum 2GB RAM available
 - [ ] Minimum 10GB free disk space
 - [ ] Internet connection for downloading images
-- [ ] Sudo/root access for Docker installation
+- [ ] Sudo/root access for Podman installation
 
 ### Software Prerequisites
-- [ ] Docker Engine 20.10+ installed
-- [ ] Docker Compose V2 (plugin) installed
-- [ ] User added to `docker` group
-- [ ] Docker service is running
+- [ ] Podman installed and running
+- [ ] Podman Compose plugin installed
+- [ ] User has proper permissions (run as root or non-root with k8s-file logging)
 
 **Verify with:**
 ```bash
-docker --version
-docker compose version
-docker ps
+podman --version
+podman compose version
+podman ps
 ```
 
 ---
@@ -34,11 +33,11 @@ docker ps
 - [ ] `ACCEPT_EULA=Y` is set
 - [ ] `SA_PASSWORD` is configured with a **strong password**
 - [ ] Password meets requirements:
-  - [ ] At least 8 characters
-  - [ ] Contains uppercase letters
-  - [ ] Contains lowercase letters
-  - [ ] Contains numbers
-  - [ ] Contains special characters
+   - [ ] At least 8 characters
+   - [ ] Contains uppercase letters
+   - [ ] Contains lowercase letters
+   - [ ] Contains numbers
+   - [ ] Contains special characters
 - [ ] `MSSQL_PID` set to desired edition (Developer/Express/Enterprise)
 - [ ] `SQL_PORT` configured (default: 1433)
 - [ ] Memory limit set appropriately (`MSSQL_MEMORY_LIMIT_MB`)
@@ -51,7 +50,7 @@ docker ps
 **Create .env file:**
 ```bash
 cp .env.example .env
-nano .env  # Edit with your values
+nano .env   # Edit with your values
 ```
 
 **Make executable:**
@@ -62,15 +61,15 @@ chmod +x scripts/*.sh setup.sh
 ### Directory Structure
 - [ ] `queries/` directory exists
 - [ ] All 3 SQL initialization scripts present:
-  - [ ] `01-create-database.sql`
-  - [ ] `02-create-tables.sql`
-  - [ ] `03-seed-data.sql`
+   - [ ] `01-create-database.sql`
+   - [ ] `02-create-tables.sql`
+   - [ ] `03-seed-data.sql`
 - [ ] `backups/` directory exists
 - [ ] `scripts/` directory exists with all helper scripts:
-  - [ ] `connect.sh`
-  - [ ] `backup.sh`
-  - [ ] `restore.sh`
-  - [ ] `verify.sh`
+   - [ ] `connect.sh`
+   - [ ] `backup.sh`
+   - [ ] `restore.sh`
+   - [ ] `verify.sh`
 
 ---
 
@@ -86,8 +85,8 @@ chmod +x scripts/*.sh setup.sh
 
 **Check status:**
 ```bash
-docker compose ps
-docker inspect mssql-server-2019 | grep Health
+podman compose ps
+podman inspect mssql-server-2019 | grep Health
 ```
 
 ### Verify Deployment
@@ -98,10 +97,10 @@ docker inspect mssql-server-2019 | grep Health
 - [ ] AppDB database exists
 - [ ] Sample tables are created
 - [ ] Sample data is present
-- [ ] All 3 Docker volumes created:
-  - [ ] `mssql-2019-data`
-  - [ ] `mssql-2019-log`
-  - [ ] `mssql-2019-secrets`
+- [ ] All 3 Podman volumes created:
+   - [ ] `mssql-2019-data`
+   - [ ] `mssql-2019-log`
+   - [ ] `mssql-2019-secrets`
 
 **Verify with:**
 ```bash
@@ -192,8 +191,8 @@ GO
 
 ### Container Monitoring
 - [ ] Container health checks working
-- [ ] Can view container logs: `docker compose logs -f`
-- [ ] Can monitor resource usage: `docker stats`
+- [ ] Can view container logs: `podman compose logs -f`
+- [ ] Can monitor resource usage: `podman stats`
 - [ ] Container auto-restart configured (`restart: unless-stopped`)
 
 ### SQL Server Monitoring
@@ -316,7 +315,7 @@ bash scripts/verify.sh
 
 ### If Issues Found
 1. Review error messages from verify.sh
-2. Check Docker logs: `docker compose logs`
+2. Check Podman logs: `podman compose logs`
 3. Review INSTALL.md troubleshooting section
 4. Check system resources (RAM, disk space)
 5. Verify .env configuration
@@ -346,7 +345,7 @@ bash scripts/verify.sh
 ## 🔄 Maintenance Checklist (Ongoing)
 
 ### Daily
-- [ ] Check container is running: `docker compose ps`
+- [ ] Check container is running: `podman compose ps`
 - [ ] Review error logs for issues
 - [ ] Monitor disk space
 
@@ -376,11 +375,11 @@ bash scripts/verify.sh
 ### Support Resources
 - Documentation: `/HPCL/README.md`
 - SQL Server Docs: https://docs.microsoft.com/en-us/sql/
-- Docker Docs: https://docs.docker.com/
+- Podman Docs: https://podman.io/
 
 ### Escalation Path
 1. Check documentation
-2. Review logs: `docker compose logs`
+2. Review logs: `podman compose logs`
 3. Run verify script: `bash scripts/verify.sh`
 4. Contact: ________________ (Database Administrator)
 5. Emergency contact: ________________

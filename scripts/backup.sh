@@ -18,19 +18,19 @@ echo "Backup file: ${BACKUP_FILE}"
 echo ""
 
 # Check if container is running
-if ! docker ps | grep -q mssql-server-2019; then
+if ! podman ps | grep -q mssql-server-2019; then
     echo "Error: SQL Server container is not running!"
     exit 1
 fi
 
 # Perform backup
 echo "Starting backup..."
-docker exec -i mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd \
+podman exec -i mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd \
     -C \
-    -S localhost \
-    -U sa \
-    -P "${SA_PASSWORD}" \
-    -Q "BACKUP DATABASE [${DATABASE_NAME}] TO DISK = N'/var/opt/mssql/backups/${BACKUP_FILE}' WITH NOFORMAT, NOINIT, NAME = '${DATABASE_NAME}-full', SKIP, NOREWIND, NOUNLOAD, COMPRESSION, STATS = 10"
+     -S localhost \
+     -U sa \
+     -P "${SA_PASSWORD}" \
+     -Q "BACKUP DATABASE [${DATABASE_NAME}] TO DISK = N'/var/opt/mssql/backups/${BACKUP_FILE}' WITH NOFORMAT, NOINIT, NAME = '${DATABASE_NAME}-full', SKIP, NOREWIND, NOUNLOAD, COMPRESSION, STATS = 10"
 
 if [ $? -eq 0 ]; then
     echo ""
@@ -41,14 +41,14 @@ if [ $? -eq 0 ]; then
     echo "Backup location (host): ./backups/${BACKUP_FILE}"
     echo ""
 
-    # Verify backup
+     # Verify backup
     echo "Verifying backup..."
-    docker exec -i mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd \
-        -C \
-        -S localhost \
-        -U sa \
-        -P "${SA_PASSWORD}" \
-        -Q "RESTORE VERIFYONLY FROM DISK = N'/var/opt/mssql/backups/${BACKUP_FILE}'"
+    podman exec -i mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd \
+         -C \
+         -S localhost \
+         -U sa \
+         -P "${SA_PASSWORD}" \
+         -Q "RESTORE VERIFYONLY FROM DISK = N'/var/opt/mssql/backups/${BACKUP_FILE}'"
 
     echo ""
     echo "Backup verification completed!"

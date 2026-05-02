@@ -1,26 +1,26 @@
 #!/bin/bash
 
 echo "=========================================="
-echo "SQL Server 2019 Docker Setup"
+echo "SQL Server 2019 Podman Setup"
 echo "=========================================="
 echo ""
 
-# Check if Docker is installed
-if ! command -v docker &> /dev/null; then
-    echo "Error: Docker is not installed!"
-    echo "Please install Docker first: https://docs.docker.com/engine/install/ubuntu/"
+# Check if Podman is installed
+if ! command -v podman &> /dev/null; then
+    echo "Error: Podman is not installed!"
+    echo "Please install Podman first: https://podman.io/getting-started/installation"
     exit 1
 fi
 
-# Check if Docker Compose is installed
-if ! docker compose version &> /dev/null 2>&1; then
-    echo "Error: Docker Compose is not installed!"
-    echo "Please install Docker Compose plugin: https://docs.docker.com/compose/install/"
+# Check if Podman Compose is installed
+if ! podman compose version &> /dev/null 2>&1; then
+    echo "Error: Podman Compose is not installed!"
+    echo "Please install the Podman Compose plugin"
     exit 1
 fi
 
-echo "✓ Docker is installed"
-echo "✓ Docker Compose is installed"
+echo "✓ Podman is installed"
+echo "✓ Podman Compose is installed"
 echo ""
 
 # Create directory structure
@@ -39,7 +39,7 @@ if [ ! -f .env ]; then
     echo "Warning: .env file not found!"
     echo ""
 
-    # Check if .env.example exists
+     # Check if .env.example exists
     if [ -f .env.example ]; then
         echo "Found .env.example file."
         echo "Creating .env from .env.example..."
@@ -50,8 +50,8 @@ if [ ! -f .env ]; then
         echo "Run: nano .env (or use your preferred editor)"
         echo ""
         echo "Password requirements:"
-        echo "  - At least 8 characters"
-        echo "  - Contains uppercase, lowercase, digits, and special characters"
+        echo "   - At least 8 characters"
+        echo "   - Contains uppercase, lowercase, digits, and special characters"
         echo ""
         exit 1
     else
@@ -74,19 +74,19 @@ if [ -z "$SA_PASSWORD" ]; then
 fi
 
 echo "Configuration:"
-echo "  - SQL Server Edition: ${MSSQL_PID:-Developer}"
-echo "  - SQL Server Port: ${SQL_PORT:-1433}"
-echo "  - Memory Limit: ${MSSQL_MEMORY_LIMIT_MB:-2048}MB"
-echo "  - SQL Server Agent: ${MSSQL_AGENT_ENABLED:-true}"
+echo "   - SQL Server Edition: ${MSSQL_PID:-Developer}"
+echo "   - SQL Server Port: ${SQL_PORT:-1433}"
+echo "   - Memory Limit: ${MSSQL_MEMORY_LIMIT_MB:-2048}MB"
+echo "   - SQL Server Agent: ${MSSQL_AGENT_ENABLED:-true}"
 echo ""
 
 # Pull the image
 echo "Pulling SQL Server 2019 image..."
-docker compose pull
+podman compose pull
 
 echo ""
 echo "Starting SQL Server..."
-docker compose up -d
+podman compose up -d
 
 echo ""
 echo "Waiting for SQL Server to start..."
@@ -95,7 +95,7 @@ sleep 10
 # Wait for health check
 echo "Checking health status..."
 for i in {1..30}; do
-    if docker inspect mssql-server-2019 2>/dev/null | grep -q '"Status": "healthy"'; then
+    if podman inspect mssql-server-2019 2>/dev/null | grep -q '"Status": "healthy"'; then
         echo ""
         echo "✓ SQL Server is healthy and ready!"
         break
@@ -115,7 +115,7 @@ echo "=========================================="
 echo "Setup Complete!"
 echo "=========================================="
 echo ""
-echo "SQL Server 2019 is now running!"
+echo "SQL Server 2019 is now running with Podman!"
 echo ""
 echo "Connection Details:"
 echo "  Server: localhost,${SQL_PORT:-1433}"
@@ -125,6 +125,6 @@ echo ""
 echo "Quick Commands:"
 echo "  Connect: bash scripts/connect.sh"
 echo "  Backup: bash scripts/backup.sh"
-echo "  Logs: docker compose logs -f"
-echo "  Stop: docker compose down"
+echo "  Logs: podman compose logs -f"
+echo "  Stop: podman compose down"
 echo ""

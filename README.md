@@ -1,129 +1,138 @@
-# 🚀 SQL Server 2019 Docker Setup
-
-Complete, production-ready SQL Server 2019 setup using Docker on Ubuntu with persistent volumes, automated backups, and initialization scripts.
-
-## 📦 What's Included
-
-This setup includes everything you need:
-
-- ✅ **SQL Server 2019** (latest Docker image from Microsoft)
-- ✅ **Docker Compose** configuration with health checks
-- ✅ **Persistent volumes** for data, logs, and secrets
-- ✅ **Sample database** (AppDB) with realistic schema and data
-- ✅ **Automated initialization** scripts
-- ✅ **Backup/restore utilities** with helper scripts
-- ✅ **Complete documentation** (Installation Guide, Quick Start, Checklist)
-- ✅ **Security best practices** configured out of the box
-
-## 📋 Quick Links
-
-- **[INSTALL.md](INSTALL.md)** - Complete installation guide with Docker setup
-- **[CHECKLIST.md](CHECKLIST.md)** - Deployment verification checklist
-
-## 🎯 Choose Your Path
-
-### Path 1: I Don't Have Docker
-👉 Start with **[INSTALL.md](INSTALL.md)** - Complete step-by-step installation
-
-### Path 2: I Have Docker
-👉 Follow the **Super Quick Start** below - Get running in 5 minutes
-
-### Path 3: Using Makefile (Recommended)
-👉 Use **`make`** commands - Simplified workflow with single commands
-
-### Path 4: Deploying to Production
-👉 Use **[CHECKLIST.md](CHECKLIST.md)** - Comprehensive deployment checklist
-
-## ⚡ Super Quick Start
-
-### Using Makefile (Recommended)
-
-```bash
-# View all available commands
-make help
-
-# Complete setup (first time)
-make setup
-
-# Verify everything is working
-make verify
-```
-
-**For complete Makefile documentation with 60+ commands, see [MAKEFILE.md](MAKEFILE.md)**
-
----
-
-### Using Scripts Directly
-
-If you already have Docker installed:
-
-```bash
-# 1. Set your password
-nano .env  # Change SA_PASSWORD=YourStrong@Pass123
-
-# 2. Make scripts executable
-chmod +x scripts/*.sh setup.sh
-
-# 3. Deploy!
-bash setup.sh
-
-# 4. Connect
-bash scripts/connect.sh
-```
-
-That's it! SQL Server is running with a sample database ready to use.
+# SQL Server 2019 Podman Setup [L1-777]
+ ## 📦 What's Included [L5-18]
+ ## 📋 Quick Links [L18-23]
+ ## 🎯 Choose Your Path [L23-37]
+   ### Path 1: I Don't Have Podman [L25-28]
+   ### Path 2: I Have Podman [L28-31]
+   ### Path 3: Using Makefile (Recommended) [L31-34]
+   ### Path 4: Deploying to Production [L34-37]
+ ## ⚡ Super Quick Start [L37-76]
+   ### Using Makefile (Recommended) [L39-56]
+   ### Using Scripts Directly [L56-76]
+ ## 📋 Prerequisites [L76-84]
+ ## 📁 Project Structure [L84-112]
+ ## 🚀 Quick Start Guide [L112-171]
+   ### 1. Install Podman (if not already installed) [L114-129]
+   ### 2. Configure Environment [L129-142]
+   ### 3. Make Scripts Executable [L142-149]
+   ### 4. Run Setup [L149-159]
+   ### 5. Verify Installation [L159-171]
+ ## 🔧 Configuration [L171-206]
+   ### Environment Variables (.env) [L173-192]
+   ### 🔑 Password Requirements [L192-206]
+ ## 🎓 What You'll Get [L206-233]
+   ### 1. Running SQL Server 2019 [L210-216]
+   ### 2. Sample Database (AppDB) [L216-226]
+   ### 3. Persistent Storage [L226-233]
+ ## 🗄️ Database Management [L233-285]
+   ### Connect to SQL Server [L235-252]
+   ### Create Backup [L252-271]
+   ### Restore from Backup [L271-285]
+ ## 🧪 Test the Setup [L285-333]
+ ## 🎮 Essential Commands [L333-364]
+ ## 🐳 Podman Commands [L364-404]
+   ### Service Management [L366-391]
+   ### Complete Cleanup [L391-404]
+ ## 📊 Volume Management [L404-440]
+   ### Volume Information [L406-414]
+   ### Volume Commands [L414-433]
+   ### Volume Locations (Inside Container) [L433-440]
+ ## 🔍 Monitoring & Troubleshooting [L440-551]
+   ### Health Checks [L442-458]
+   ### SQL Server Information [L458-509]
+   ### Common Issues [L509-551]
+    #### Container won't start [L511-524]
+    #### Can't connect to SQL Server [L524-542]
+    #### Reset Everything [L542-551]
+ ## 📝 Sample Database Schema [L551-571]
+   ### Tables [L555-563]
+   ### Views [L563-567]
+   ### Stored Procedures [L567-571]
+ ## ❓ Common Questions [L571-599]
+   ### Q: Do I need to install SQL Server on my machine? [L573-576]
+   ### Q: Will my data be lost when I stop the container? [L576-579]
+   ### Q: Can I use this in production? [L579-587]
+   ### Q: How do I backup my data? [L587-590]
+   ### Q: How much disk space do I need? [L590-593]
+   ### Q: Can I change the port? [L593-596]
+   ### Q: How do I connect from my application? [L596-599]
+ ## 🔒 Security Best Practices [L599-634]
+ ## 🔄 Automated Backups with Cron [L634-647]
+ ## 🌐 Connecting from Applications [L647-703]
+   ### .NET Connection String [L649-655]
+   ### Python (pyodbc) [L655-670]
+   ### Node.js (mssql) [L670-690]
+     const sql [L673]
+     const config [L675-685]
+      server [L676]
+      port [L677]
+      database [L678]
+      user [L679]
+      password [L680]
+      options [L681-684]
+       encrypt [L682]
+       trustServerCertificate [L683]
+     const pool [L687]
+   ### Java (JDBC) [L690-703]
+ ## 🆘 Need Help? [L703-724]
+   ### Container won't start? [L705-711]
+   ### Can't connect? [L711-718]
+   ### Want to reset everything? [L718-724]
+ ## 📖 Learn More [L724-731]
+ ## 📚 Additional Resources [L731-739]
+## 📄 License [L739-745]
+## 🤝 Support [L745-753]
+## 🚦 Next Steps [L753-762]
+## 📋 Changelog [L762-777]
+   ### Version 1.0.0 [L764-777]
 
 ## 📋 Prerequisites
 
-- Ubuntu 24.04 LTS or later
-- Docker Engine 20.10+
-- Docker Compose V2 (plugin)
-- At least 2GB of free RAM
-- At least 10GB of free disk space
+- **Operating System**: Ubuntu 24.04 LTS or later (64-bit)
+- **RAM**: Minimum 2GB, Recommended 4GB+
+- **Disk Space**: Minimum 10GB free space
+- **Podman**: Installed and configured
+- **Internet Connection**: For downloading SQL Server image
 
 ## 📁 Project Structure
 
 ```
-HPCL/
-├── compose.yaml                # Docker Compose configuration
-├── .env                        # Environment variables (YOUR PASSWORD HERE!)
-├── setup.sh                    # Automated setup script
-│
-├── 📚 Documentation
-│   ├── README.md              # This file - complete documentation
-│   ├── INSTALL.md             # Complete installation guide
-│   └── CHECKLIST.md           # Deployment verification checklist
-│
-├── 🗄️ queries/           # Database initialization (auto-run on first start)
-│   ├── 01-create-database.sql # Creates AppDB database
-│   ├── 02-create-tables.sql   # Creates tables and indexes
-│   └── 03-seed-data.sql       # Inserts sample data
-│
-├── 💾 backups/                 # Database backup files stored here
-│   └── .gitkeep
-│
-└── 🛠️ scripts/                 # Helper utilities
-    ├── connect.sh             # Connect to SQL Server
-    ├── backup.sh              # Backup databases
-    ├── restore.sh             # Restore from backups
-    └── verify.sh              # Health check & verification
+├── compose.yaml              # Podman Compose configuration file
+├── setup.sh                  # Automated setup script
+├── .env.example              # Environment variables template
+├── .gitignore               # Git ignore rules
+├── INSTALL.md               # Installation guide
+├── README.md                # This file
+├── CHECKLIST.md             # Deployment checklist
+├── Makefile                 # Command wrapper
+├── Makefile.md              # Makefile documentation
+├── queries/                 # Database initialization scripts
+│   ├── 01-create-database.sql
+│   ├── 02-create-tables.sql
+│   └── 03-seed-data.sql
+├── backups/                 # Database backup files
+├── scripts/                 # Helper scripts
+│   ├── connect.sh
+│   ├── backup.sh
+│   ├── restore.sh
+│   ├── verify.sh
+│   └── init-db.sh
 ```
 
 ## 🚀 Quick Start Guide
 
-### 1. Install Docker (if not already installed)
+### 1. Install Podman (if not already installed)
 
-**If you don't have Docker installed**, follow the complete installation guide in **[INSTALL.md](INSTALL.md)**.
+**If you don't have Podman installed**, follow the installation guide in [INSTALL.md](INSTALL.md#step-1-install-podman).
 
-**If you already have Docker**, verify it's working:
+**If you already have Podman**, verify it's working:
 
 ```bash
-# Check Docker is installed
-docker --version
-docker compose version
+# Check Podman is installed
+podman --version
 
-# Test Docker
-docker run --rm hello-world
+# Test Podman with hello-world
+podman run --rm hello-world
 ```
 
 ### 2. Configure Environment
@@ -153,7 +162,7 @@ chmod +x setup.sh
 bash setup.sh
 
 # OR manually start
-docker compose up -d
+podman compose up -d
 ```
 
 ### 5. Verify Installation
@@ -163,8 +172,8 @@ docker compose up -d
 bash scripts/verify.sh
 
 # OR manually check
-docker compose ps
-docker compose logs -f sqlserver
+podman compose ps
+podman compose logs -f sqlserver
 bash scripts/connect.sh
 ```
 
@@ -173,15 +182,17 @@ bash scripts/connect.sh
 ### Environment Variables (.env)
 
 > **Note:** Copy `.env.example` to `.env` and update with your values.
-> ```bash
-> cp .env.example .env
-> ```
+
+```bash
+cp .env.example .env
+nano .env   # Edit with your values
+```
 
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `ACCEPT_EULA` | Y | Accept SQL Server EULA (required) |
-| `SA_PASSWORD` | - | SA user password (REQUIRED - must be strong) |
-| `MSSQL_PID` | Developer | SQL Server edition (Developer, Express, Standard, Enterprise, Evaluation) |
+| `SA_PASSWORD` | - | SA user password (**REQUIRED** - must be strong) |
+| `MSSQL_PID` | Developer | SQL Server edition (Developer, Express, Standard, Enterprise) |
 | `MSSQL_AGENT_ENABLED` | true | Enable SQL Server Agent |
 | `MSSQL_COLLATION` | SQL_Latin1_General_CP1_CI_AS | Default collation |
 | `MSSQL_MEMORY_LIMIT_MB` | 2048 | Memory limit in MB |
@@ -191,17 +202,23 @@ bash scripts/connect.sh
 
 ### 🔑 Password Requirements
 
-The SA password MUST meet these requirements:
-- **Minimum 8 characters**
-- At least one uppercase letter
-- At least one lowercase letter
-- At least one digit
-- At least one special character
+The SA password **MUST** meet these requirements:
 
-**Examples of valid passwords:**
+✅ At least 8 characters long  
+✅ Contains uppercase letters (A-Z)  
+✅ Contains lowercase letters (a-z)  
+✅ Contains numbers (0-9)  
+✅ Contains special characters (!@#$%^&*)
+
+**Valid password examples:**
 - `MyStrong@Pass123`
 - `SecureDB#2024!`
 - `P@ssw0rd_SQL2019`
+
+**Invalid password examples:**
+- `password` (no uppercase, numbers, or special chars)
+- `Pass123` (less than 8 chars, no special chars)
+- `PASSWORD123` (no lowercase or special chars)
 
 ## 🎓 What You'll Get
 
@@ -209,9 +226,9 @@ After setup, you'll have:
 
 ### 1. Running SQL Server 2019
 - Container name: `mssql-server-2019`
-- Port: `1433` (configurable)
+- Port: `1433` (configurable via `.env`)
 - Edition: Developer (free, fully featured)
-- Memory: 2GB (configurable)
+- Memory: Configurable via `MSSQL_MEMORY_LIMIT_MB`
 
 ### 2. Sample Database (AppDB)
 Pre-populated with realistic data:
@@ -228,7 +245,7 @@ Your data survives container restarts:
 - `mssql-2019-data` - Database files (.mdf)
 - `mssql-2019-log` - Transaction logs (.ldf)
 - `mssql-2019-secrets` - Certificates and keys
-- `./backups/` - Backup files (mapped to host)
+- `./backups/` - Backup files (mapped to host directory)
 
 ## 🗄️ Database Management
 
@@ -244,9 +261,9 @@ bash scripts/connect.sh
 sqlcmd -S localhost,1433 -U sa -P 'YourPassword'
 ```
 
-**Using Docker exec:**
+**Using Podman exec:**
 ```bash
-docker exec -it mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P 'YourPassword'
+podman exec -it mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P 'YourPassword'
 ```
 
 ### Create Backup
@@ -321,7 +338,7 @@ SELECT
     p.ProductName,
     oi.Quantity,
     oi.UnitPrice,
-    (oi.Quantity * oi.UnitPrice) AS LineTotal
+     (oi.Quantity * oi.UnitPrice) AS LineTotal
 FROM Orders o
 INNER JOIN Users u ON o.UserId = u.UserId
 INNER JOIN OrderItems oi ON o.OrderId = oi.OrderId
@@ -334,16 +351,16 @@ GO
 
 ```bash
 # Start SQL Server
-docker compose up -d
+podman compose up -d
 
 # Stop SQL Server
-docker compose down
+podman compose down
 
 # View logs
-docker compose logs -f
+podman compose logs -f
 
 # Check status
-docker compose ps
+podman compose ps
 
 # Connect to database
 bash scripts/connect.sh
@@ -358,75 +375,73 @@ bash scripts/restore.sh <backup-file> <target-db>
 bash scripts/verify.sh
 
 # Restart SQL Server
-docker compose restart
+podman compose restart
 ```
 
-## 🐳 Docker Commands
-
-### Service Management
+## ⚙️ Podman Commands
 
 ```bash
 # Start services
-docker compose up -d
+podman compose up -d
 
 # Stop services
-docker compose down
+podman compose down
 
 # Restart services
-docker compose restart
+podman compose restart
 
 # View logs (follow mode)
-docker compose logs -f
+podman compose logs -f
 
 # View last 100 lines
-docker compose logs --tail=100 sqlserver
+podman compose logs --tail=100 sqlserver
 
 # Check container status
-docker compose ps
+podman compose ps
 
 # Execute bash in container
-docker exec -it mssql-server-2019 bash
+podman exec -it mssql-server-2019 bash
 ```
 
 ### Complete Cleanup
 
 ```bash
 # Stop and remove containers (keeps volumes)
-docker compose down
+podman compose down
 
 # Stop and remove everything including volumes (DELETES ALL DATA!)
-docker compose down -v
+podman compose down -v
 
 # Remove specific volumes
-docker volume rm mssql-2019-data mssql-2019-log mssql-2019-secrets
+podman volume rm mssql-2019-data mssql-2019-log mssql-2019-secrets
 ```
 
 ## 📊 Volume Management
 
 ### Volume Information
 
-Docker volumes store persistent data:
+Podman volumes store persistent data:
 - **mssql-2019-data**: Database files (.mdf)
 - **mssql-2019-log**: Transaction log files (.ldf)
 - **mssql-2019-secrets**: Certificates and keys
-- **./backups**: Backup files (mapped to host directory)
+- `./backups/`: Backup files (mapped to host directory)
 
 ### Volume Commands
 
 ```bash
 # List all SQL Server volumes
-docker volume ls | grep mssql
+podman volume ls | grep mssql
 
 # Inspect volume details
-docker volume inspect mssql-2019-data
+podman volume inspect mssql-2019-data
 
 # Check volume disk usage
-docker system df -v | grep mssql
+podman system df -v | grep mssql
 
 # Backup entire volume to tar file
-docker run --rm \
-    -v mssql-2019-data:/data \
-    -v $(pwd)/volume-backups:/backup \
+podman run --rm \
+     -v mssql-2019-data:/data \
+     -v $(pwd)/volume-backups:/backup \
     ubuntu tar czf /backup/mssql-data-$(date +%Y%m%d).tar.gz -C /data .
 ```
 
@@ -446,13 +461,13 @@ docker run --rm \
 bash scripts/verify.sh
 
 # Check container health status
-docker inspect mssql-server-2019 | grep -A 10 Health
+podman inspect mssql-server-2019 | grep -A 10 Health
 
 # View SQL Server error log
-docker exec mssql-server-2019 cat /var/opt/mssql/log/errorlog
+podman exec mssql-server-2019 cat /var/opt/mssql/log/errorlog
 
 # Monitor container resources
-docker stats mssql-server-2019
+podman stats mssql-server-2019
 ```
 
 ### SQL Server Information
@@ -474,9 +489,9 @@ GO
 
 -- Check memory usage
 SELECT 
-    (physical_memory_in_use_kb/1024) AS Memory_usedby_Sqlserver_MB,
-    (locked_page_allocations_kb/1024) AS Locked_pages_used_Sqlserver_MB,
-    (total_virtual_address_space_kb/1024) AS Total_VAS_in_MB,
+     (physical_memory_in_use_kb/1024) AS Memory_usedby_Sqlserver_MB,
+     (locked_page_allocations_kb/1024) AS Locked_pages_used_Sqlserver_MB,
+     (total_virtual_address_space_kb/1024) AS Total_VAS_in_MB,
     process_physical_memory_low,
     process_virtual_memory_low
 FROM sys.dm_os_process_memory;
@@ -491,7 +506,7 @@ GO
 -- Check database sizes
 SELECT 
     DB_NAME(database_id) AS DatabaseName,
-    (size * 8.0 / 1024) AS SizeMB
+     (size * 8.0 / 1024) AS SizeMB
 FROM sys.master_files
 ORDER BY DatabaseName;
 GO
@@ -512,7 +527,7 @@ GO
 
 ```bash
 # Check logs for errors
-docker compose logs
+podman compose logs
 
 # Common causes:
 # 1. Weak SA password - must meet complexity requirements
@@ -525,10 +540,10 @@ docker compose logs
 
 ```bash
 # Verify container is running
-docker ps | grep mssql
+podman ps | grep mssql
 
 # Check port binding
-docker port mssql-server-2019
+podman port mssql-server-2019
 
 # Test network connectivity
 telnet localhost 1433
@@ -543,8 +558,8 @@ sudo ufw status
 
 ```bash
 # Complete cleanup and fresh start
-docker compose down -v
-docker volume rm mssql-2019-data mssql-2019-log mssql-2019-secrets
+podman compose down -v
+podman volume rm mssql-2019-data mssql-2019-log mssql-2019-secrets
 bash setup.sh
 ```
 
@@ -571,10 +586,10 @@ The initialization scripts create an **AppDB** database with the following schem
 ## ❓ Common Questions
 
 ### Q: Do I need to install SQL Server on my machine?
-**A:** No! Everything runs in Docker. You only need Docker installed.
+**A:** No! Everything runs in Podman. You only need Podman installed.
 
 ### Q: Will my data be lost when I stop the container?
-**A:** No! Data is stored in Docker volumes and persists across restarts.
+**A:** No! Data is stored in Podman volumes and persists across restarts.
 
 ### Q: Can I use this in production?
 **A:** The setup is production-ready, but:
@@ -599,37 +614,37 @@ The initialization scripts create an **AppDB** database with the following schem
 ## 🔒 Security Best Practices
 
 1. **Change Default Password**
-   - Never use default passwords in production
-   - Use a password manager to generate strong passwords
-   - Use different passwords for different environments
+    - Never use default passwords in production
+    - Use a password manager to generate strong passwords
+    - Use different passwords for different environments
 
 2. **Environment Variables**
-   - Never commit `.env` file to version control (already in .gitignore)
-   - Store production credentials securely
-   - Rotate passwords regularly
+    - Never commit `.env` file to version control (already in .gitignore)
+    - Store production credentials securely
+    - Rotate passwords regularly
 
 3. **Network Security**
-   - Don't expose port 1433 to the public internet
-   - Use firewall rules to restrict access
-   - Consider using Docker networks for service-to-service communication
-   - Enable TLS/SSL for connections in production
+    - Don't expose port 1433 to the public internet
+    - Use firewall rules to restrict access
+    - Consider using Podman networks for service-to-service communication
+    - Enable TLS/SSL for connections in production
 
 4. **Regular Updates**
-   - Keep SQL Server image updated
-   - Monitor Microsoft security advisories
-   - Test updates in non-production environments first
+    - Keep SQL Server image updated
+    - Monitor Microsoft security advisories
+    - Test updates in non-production environments first
 
 5. **Backup Strategy**
-   - Automate backups with cron jobs
-   - Store backups in secure, off-site location
-   - Test restore procedures regularly
-   - Implement backup retention policies
+    - Automate backups with cron jobs
+    - Store backups in secure, off-site location
+    - Test restore procedures regularly
+    - Implement backup retention policies
 
 6. **Access Control**
-   - Create application-specific users instead of using SA
-   - Grant minimum required permissions (principle of least privilege)
-   - Use strong authentication
-   - Enable audit logging for sensitive operations
+    - Create application-specific users instead of using SA
+    - Grant minimum required permissions (principle of least privilege)
+    - Use strong authentication
+    - Enable audit logging for sensitive operations
 
 ## 🔄 Automated Backups with Cron
 
@@ -638,10 +653,10 @@ The initialization scripts create an **AppDB** database with the following schem
 crontab -e
 
 # Add daily backup at 2 AM
-0 2 * * * cd /path/to/HPCL && bash scripts/backup.sh AppDB >> /var/log/sqlserver-backup.log 2>&1
+0 2 * * * cd ~/deploy-mssql-with-compose && bash scripts/backup.sh AppDB >> /var/log/sqlserver-backup.log 2>&1
 
 # Add weekly backup rotation (keep last 4 weeks)
-0 3 * * 0 find /path/to/HPCL/backups -name "*.bak" -mtime +28 -delete
+0 3 * * 0 find ~/deploy-mssql-with-compose/backups -name "*.bak" -mtime +28 -delete
 ```
 
 ## 🌐 Connecting from Applications
@@ -658,12 +673,12 @@ Server=localhost,1433;Database=AppDB;User Id=sa;Password=YOUR_PASSWORD;TrustServ
 import pyodbc
 
 conn = pyodbc.connect(
-    'DRIVER={ODBC Driver 17 for SQL Server};'
-    'SERVER=localhost,1433;'
-    'DATABASE=AppDB;'
-    'UID=sa;'
-    'PWD=YOUR_PASSWORD;'
-    'TrustServerCertificate=yes;'
+     'DRIVER={ODBC Driver 17 for SQL Server};'
+     'SERVER=localhost,1433;'
+     'DATABASE=AppDB;'
+     'UID=sa;'
+     'PWD=YOUR_PASSWORD;'
+     'TrustServerCertificate=yes;'
 )
 ```
 
@@ -681,7 +696,7 @@ const config = {
     options: {
         encrypt: true,
         trustServerCertificate: true
-    }
+     }
 };
 
 const pool = await sql.connect(config);
@@ -691,11 +706,11 @@ const pool = await sql.connect(config);
 
 ```java
 String connectionUrl = "jdbc:sqlserver://localhost:1433;" +
-    "databaseName=AppDB;" +
-    "user=sa;" +
-    "password=YOUR_PASSWORD;" +
-    "encrypt=true;" +
-    "trustServerCertificate=true;";
+     "databaseName=AppDB;" +
+     "user=sa;" +
+     "password=YOUR_PASSWORD;" +
+     "encrypt=true;" +
+     "trustServerCertificate=true;";
 
 Connection conn = DriverManager.getConnection(connectionUrl);
 ```
@@ -704,20 +719,20 @@ Connection conn = DriverManager.getConnection(connectionUrl);
 
 ### Container won't start?
 ```bash
-docker compose logs
+podman compose logs
 ```
 Common causes: weak password, port in use, insufficient RAM
 
 ### Can't connect?
 ```bash
-docker ps | grep mssql
+podman ps | grep mssql
 bash scripts/verify.sh
 ```
 Wait 30-60 seconds - SQL Server takes time to initialize
 
 ### Want to reset everything?
 ```bash
-docker compose down -v
+podman compose down -v
 bash setup.sh
 ```
 
@@ -726,51 +741,40 @@ bash setup.sh
 - **Complete Installation Guide** → [INSTALL.md](INSTALL.md)
 - **Deployment Checklist** → [CHECKLIST.md](CHECKLIST.md)
 - **SQL Server Docs** → https://docs.microsoft.com/en-us/sql/
-- **Docker Docs** → https://docs.docker.com/
+- **Podman Docs** → https://podman.io/
 
 ## 📚 Additional Resources
 
 - [SQL Server 2019 Documentation](https://docs.microsoft.com/en-us/sql/sql-server/)
-- [Docker SQL Server Guide](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker)
+- [Podman SQL Server Guide](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-podman)
 - [SQL Server on Linux](https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-overview)
 - [T-SQL Reference](https://docs.microsoft.com/en-us/sql/t-sql/language-reference)
-- [Docker Compose Documentation](https://docs.docker.com/compose/)
+- [Podman Compose Documentation](https://podman.io/docs/compose-file)
 
 ## 📄 License
 
-This setup is provided as-is for educational and development purposes.
-
-**Important:** SQL Server requires proper licensing for production use. The Developer edition is free for development and testing but cannot be used in production environments. Please review Microsoft's licensing terms.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 🤝 Support
 
-For issues related to:
-- **Setup & Installation**: Check INSTALL.md and run `bash scripts/verify.sh`
-- **Docker Issues**: Review Docker logs with `docker compose logs`
-- **SQL Server Issues**: Check SQL Server error logs and Microsoft documentation
-- **Scripts**: Ensure scripts have execute permissions (`chmod +x scripts/*.sh`)
+- **Issues/Bugs**: Open an issue on GitHub
+- **Questions**: Check INSTALL.md troubleshooting section
+- **Production Issues**: Review CHECKLIST.md deployment checklist
 
 ## 🚦 Next Steps
 
-1. **Choose your guide** based on your experience level
-2. **Set your password** in `.env` file (REQUIRED)
-3. **Run setup** with `bash setup.sh`
-4. **Verify installation** with `bash scripts/verify.sh`
-5. **Connect and explore** with `bash scripts/connect.sh`
-6. **Build something awesome!** 🚀
+After SQL Server is up and running:
+
+1. Explore the sample database (AppDB)
+2. Test backup and restore procedures
+3. Connect your application using connection strings in README
+4. Set up automated backups for production use
+5. Review security best practices in this documentation
 
 ## 📋 Changelog
 
 ### Version 1.0.0
-- Initial setup with SQL Server 2019
-- Docker Compose configuration (compose.yaml) with health checks
-- Automated initialization scripts
-- Backup and restore utilities
-- Sample database schema with realistic data
-- Comprehensive documentation
-- Verification and monitoring scripts
-- Security best practices
-
----
-
-**Ready to get started?** Follow the Super Quick Start guide above to get running in 5 minutes! 🎉
+- Initial release with SQL Server 2019 on Podman
+- Sample database (AppDB) included
+- Backup and restore scripts
+- Makefile support

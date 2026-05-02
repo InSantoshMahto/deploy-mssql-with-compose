@@ -16,9 +16,9 @@ fi
 SA_PASSWORD=${SA_PASSWORD:-"MyStrong@Pass123"}
 
 # Check if container is running
-if ! docker ps | grep -q mssql-server-2019; then
+if ! podman ps | grep -q mssql-server-2019; then
     echo "Error: SQL Server container is not running!"
-    echo "Start it with: docker compose up -d"
+    echo "Start it with: podman compose up -d"
     exit 1
 fi
 
@@ -28,9 +28,9 @@ MAX_ATTEMPTS=30
 ATTEMPT=0
 
 while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
-    if docker exec mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd \
-        -C -S localhost -U sa -P "${SA_PASSWORD}" \
-        -Q "SELECT 1" -b -o /dev/null 2>/dev/null; then
+    if podman exec mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd \
+         -C -S localhost -U sa -P "${SA_PASSWORD}" \
+         -Q "SELECT 1" -b -o /dev/null 2>/dev/null; then
         echo "✓ SQL Server is ready"
         break
     fi
@@ -74,8 +74,8 @@ for script in queries/*.sql; do
         echo "Executing: $SCRIPT_NAME"
         echo "─────────────────────────────────────────"
 
-        if docker exec -i mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd \
-            -C -S localhost -U sa -P "${SA_PASSWORD}" < "$script"; then
+        if podman exec -i mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd \
+             -C -S localhost -U sa -P "${SA_PASSWORD}" < "$script"; then
             echo "✓ $SCRIPT_NAME completed successfully"
             ((SUCCESS_COUNT++))
         else
@@ -102,11 +102,11 @@ else
     echo "✓ All scripts executed successfully"
     echo ""
 
-    # List databases
+     # List databases
     echo "Current databases:"
-    docker exec mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd \
-        -C -S localhost -U sa -P "${SA_PASSWORD}" \
-        -Q "SELECT name FROM sys.databases ORDER BY name" -h -1
+    podman exec mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd \
+         -C -S localhost -U sa -P "${SA_PASSWORD}" \
+         -Q "SELECT name FROM sys.databases ORDER BY name" -h -1
 
     echo ""
     echo "Database initialization complete!"

@@ -1,6 +1,6 @@
-# Compose Specification
-# Docker Engine 29.4.0 | Docker Compose v5.1.3
-# API version: 1.54
+# ════════════════════════════════════════════════════════════════════════
+# SQL Server 2019 Podman Compose Configuration
+# ════════════════════════════════════════════════════════════════════════
 
 services:
   sqlserver:
@@ -8,9 +8,13 @@ services:
 
     container_name: mssql-server-2019
     hostname: sqlserver2019
-    user: "0:0"
 
-    # Resource limits and reservations
+    # ═══════════════ ROOTLESS MODE SUPPORT ═══════════════
+    # Uses your UID:GID for non-root operation
+    user:
+      "$(id -u):$(id -g)"
+
+      # ════════════════ RESOURCE LIMITS ════════════════════
     deploy:
       resources:
         limits:
@@ -21,31 +25,34 @@ services:
           memory: 4G
 
     environment:
-      # Accept End-User Licensing Agreement
-      ACCEPT_EULA: ${ACCEPT_EULA:-Y}
-      # SA user password (must be strong)
-      SA_PASSWORD: ${SA_PASSWORD}
-      # SQL Server edition (Developer, Express, Standard, Enterprise, Evaluation)
-      MSSQL_PID: ${MSSQL_PID:-Developer}
-      # Enable SQL Server Agent
-      MSSQL_AGENT_ENABLED: ${MSSQL_AGENT_ENABLED:-true}
-      # Set default collation
-      MSSQL_COLLATION: ${MSSQL_COLLATION:-SQL_Latin1_General_CP1_CI_AS}
-      # Memory limit (in MB)
+      # Accept End-User Licensing Agreement for SQL Server
+      ACCEPT_EULA:
+        ${ACCEPT_EULA:-Y}
+        # SA user password (must be strong - see .env file)
+      SA_PASSWORD:
+        ${SA_PASSWORD}
+        # SQL Server edition (Developer, Express, Standard, Enterprise, Evaluation)
+      MSSQL_PID:
+        ${MSSQL_PID:-Developer}
+        # Enable SQL Server Agent for scheduled tasks
+      MSSQL_AGENT_ENABLED:
+        ${MSSQL_AGENT_ENABLED:-true}
+        # Set default collation (matches your locale requirements)
+      MSSQL_COLLATION:
+        ${MSSQL_COLLATION:-SQL_Latin1_General_CP1_CI_AS}
+        # Memory limit in MB - tune based on available system RAM
       MSSQL_MEMORY_LIMIT_MB: ${MSSQL_MEMORY_LIMIT_MB:-2048}
 
     ports:
-      # SQL Server port
+      # Expose SQL Server port (default is 1433)
       - "${SQL_PORT:-1433}:1433"
 
     volumes:
-      # Data files - persistent storage for databases
+      # Data files - persistent storage for databases and objects
       - mssql-data:/var/opt/mssql/data
-      # Log files - transaction logs
+      # Log files - transaction logs and audit trails
       - mssql-log:/var/opt/mssql/log
-      # Secrets - certificates and keys
-      - mssql-secrets:/var/opt/mssql/secrets
-      # Backup directory - mapped to host for easy access
+      # Backup directory - mapped to host for easy access and backup automation
       - ./backups:/var/opt/mssql/backups
 
     networks:
@@ -63,19 +70,13 @@ services:
       timeout: 10s
       retries: 5
       start_period: 60s
-      start_interval: 5s
 
-    # Security options
-    security_opt:
-      - no-new-privileges:true
-
-    # Read-only root filesystem with writable tmpfs mounts
-    # Commented out as SQL Server requires write access to root
-    # read_only: true
-
-    # Logging configuration
+      # ════════════ PODMAN LOGGING CONFIGURATION ════════════
+      # Using k8s-file driver for Podman compatibility
+      # - Check logs with: podman logs sqlserver
+      # Or: journalctl -u sqlserver -f -n 50 (systemd journal)
     logging:
-      driver: "json-file"
+      driver: "k8s-file"
       options:
         max-size: "10m"
         max-file: "3"
@@ -86,25 +87,19 @@ volumes:
     driver: local
     name: mssql-2019-data
     labels:
-      com.docker.compose.project: "mssql"
-      com.docker.compose.volume: "data"
+      io.podman.compose.project: "mssql"
+      io.podman.compose.volume: "data"
+
   mssql-log:
     driver: local
     name: mssql-2019-log
     labels:
-      com.docker.compose.project: "mssql"
-      com.docker.compose.volume: "log"
-  mssql-secrets:
-    driver: local
-    name: mssql-2019-secrets
-    labels:
-      com.docker.compose.project: "mssql"
-      com.docker.compose.volume: "secrets"
+      io.podman.compose.project: "mssql"
+      io.podman.compose.volume: "log"
 
 networks:
   mssql-network:
     driver: bridge
     name: mssql-network
     labels:
-      com.docker.compose.project: "mssql"
-      com.docker.compose.network: "mssql-network"
+      io.podman.compose.project: "mssql"

@@ -1,22 +1,22 @@
 # Makefile Documentation
 
-Simple wrapper commands for managing SQL Server 2019 Docker deployment.
+Simple wrapper commands for managing SQL Server 2019 Podman deployment.
 
 ## Overview
 
-The Makefile provides convenient shortcuts for running shell scripts and common Docker Compose commands. It's a thin wrapper that makes common operations easier to remember and execute.
+The Makefile provides convenient shortcuts for running shell scripts and common Podman Compose commands. It's a thin wrapper that makes common operations easier to remember and execute.
 
 ---
 
 ## Quick Reference
 
 ```bash
-make help          # Show all available commands
-make setup         # Run complete setup
-make start         # Start SQL Server
-make connect       # Connect to database
-make backup        # Backup database
-make verify        # Run health checks
+make help           # Show all available commands
+make setup          # Run complete setup
+make start          # Start SQL Server
+make connect        # Connect to database
+make backup         # Backup database
+make verify         # Run health checks
 ```
 
 ---
@@ -31,7 +31,7 @@ Run complete setup script.
 **Executes:** `bash setup.sh`
 
 **What it does:**
-- Checks Docker installation
+- Checks Podman installation
 - Creates directory structure
 - Sets up environment
 - Starts container
@@ -67,7 +67,7 @@ make init-db
 #### `make start`
 Start SQL Server container.
 
-**Executes:** `docker compose up -d`
+**Executes:** `podman compose up -d`
 
 **Usage:**
 ```bash
@@ -79,7 +79,7 @@ make start
 #### `make stop`
 Stop SQL Server container.
 
-**Executes:** `docker compose down`
+**Executes:** `podman compose down`
 
 **Usage:**
 ```bash
@@ -91,7 +91,7 @@ make stop
 #### `make restart`
 Restart SQL Server container.
 
-**Executes:** `docker compose restart`
+**Executes:** `podman compose restart`
 
 **Usage:**
 ```bash
@@ -103,7 +103,7 @@ make restart
 #### `make status` / `make ps`
 Show container status.
 
-**Executes:** `docker compose ps`
+**Executes:** `podman compose ps`
 
 **Usage:**
 ```bash
@@ -123,7 +123,7 @@ mssql-server-2019   mcr.microsoft.com/mssql/...    Up 5 minutes (healthy)   0.0.
 #### `make logs`
 View container logs in follow mode.
 
-**Executes:** `docker compose logs -f`
+**Executes:** `podman compose logs -f`
 
 **Usage:**
 ```bash
@@ -137,7 +137,7 @@ Press `Ctrl+C` to exit.
 #### `make health`
 Check container health status.
 
-**Executes:** `docker inspect --format='{{.State.Health.Status}}' mssql-server-2019`
+**Executes:** `podman inspect --format='{{.State.Health.Status}}' mssql-server-2019`
 
 **Usage:**
 ```bash
@@ -218,7 +218,7 @@ make verify
 ```
 
 **What it checks:**
-- Docker installation
+- Podman installation
 - Container status
 - SQL Server connectivity
 - Database existence
@@ -232,7 +232,7 @@ make verify
 #### `make clean`
 Stop and remove containers (keeps volumes and data).
 
-**Executes:** `docker compose down`
+**Executes:** `podman compose down`
 
 **Usage:**
 ```bash
@@ -242,16 +242,16 @@ make clean
 **Preserves:**
 - Database volumes (data, logs, secrets)
 - Backup files
-- Docker images
+- Podman images
 
 ---
 
 #### `make clean-all`
 Stop and remove containers AND volumes.
 
-**⚠️ WARNING:** This deletes all database data!
+⚠️ **WARNING:** This deletes all database data!
 
-**Executes:** `docker compose down -v`
+**Executes:** `podman compose down -v`
 
 **Usage:**
 ```bash
@@ -264,7 +264,7 @@ make clean-all
 
 **Preserves:**
 - Backup files
-- Docker images
+- Podman images
 
 ---
 
@@ -338,21 +338,21 @@ bash scripts/init-db.sh
 
 ---
 
-## Docker Compose Commands
+## Podman Compose Commands
 
-The Makefile wraps these Docker Compose commands:
+The Makefile wraps these Podman Compose commands:
 
-| Make Command | Docker Compose Command |
+| Make Command | Podman Compose Command |
 |--------------|------------------------|
-| `make start` | `docker compose up -d` |
-| `make stop` | `docker compose down` |
-| `make restart` | `docker compose restart` |
-| `make status` | `docker compose ps` |
-| `make logs` | `docker compose logs -f` |
-| `make clean` | `docker compose down` |
-| `make clean-all` | `docker compose down -v` |
+| `make start` | `podman compose up -d` |
+| `make stop` | `podman compose down` |
+| `make restart` | `podman compose restart` |
+| `make status` | `podman compose ps` |
+| `make logs` | `podman compose logs -f` |
+| `make clean` | `podman compose down` |
+| `make clean-all` | `podman compose down -v` |
 
-You can use either the Makefile commands or Docker Compose commands directly.
+You can use either the Makefile commands or Podman Compose commands directly.
 
 ---
 
@@ -418,25 +418,25 @@ make verify
 ## Tips
 
 1. **Use `make help` to see all commands**
-   ```bash
-   make help
-   ```
+    ```bash
+    make help
+    ```
 
 2. **Tab completion works with make**
-   ```bash
-   make st<TAB>  # completes to 'make start'
-   ```
+    ```bash
+    make st<TAB>   # completes to 'make start'
+    ```
 
 3. **Chain commands if needed**
-   ```bash
-   make start && make verify
-   ```
+    ```bash
+    make start && make verify
+    ```
 
 4. **Use scripts directly for more control**
-   ```bash
-   bash scripts/backup.sh AppDB
-   bash scripts/backup.sh MyDatabase
-   ```
+    ```bash
+    bash scripts/backup.sh AppDB
+    bash scripts/backup.sh MyDatabase
+    ```
 
 ---
 
@@ -447,18 +447,18 @@ The Makefile provides:
 - ✅ Easy-to-remember command names
 - ✅ Quick access to common operations
 - ✅ No duplication of script functionality
-- ✅ Direct Docker Compose commands when needed
+- ✅ Direct Podman Compose commands when needed
 
 **Main commands:**
 ```bash
-make setup                        # First time setup
-make start                        # Start container
-make stop                         # Stop container
-make connect                      # Connect to SQL
-make backup AppDB                 # Backup database
-make restore backup.bak TargetDB  # Restore database
-make verify                       # Health checks
-make clean                        # Remove containers
+make setup                         # First time setup
+make start                         # Start container
+make stop                          # Stop container
+make connect                       # Connect to SQL
+make backup AppDB                  # Backup database
+make restore backup.bak TargetDB   # Restore database
+make verify                        # Health checks
+make clean                         # Remove containers
 ```
 
 For detailed information about what each script does, see:

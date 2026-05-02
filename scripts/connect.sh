@@ -18,11 +18,11 @@ echo "User: sa"
 echo ""
 
 # Connect using sqlcmd from within the container
-docker exec -it mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd \
+podman exec -it mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd \
     -C \
-    -S localhost \
-    -U sa \
-    -P "${SA_PASSWORD}"
+     -S localhost \
+     -U sa \
+     -P "${SA_PASSWORD}"
 
 echo ""
 echo "Connection closed."
