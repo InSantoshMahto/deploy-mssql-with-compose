@@ -263,13 +263,17 @@ podman inspect mssql-server-2019 | grep -A 5 Health
 
 ### Check Container Status
 
-```bash
-# Verify container is running
-podman ps | grep mssql
+Confirm the SQL Server container is running and healthy by checking its status:
 
-# Expected output:
-# CONTAINER ID   IMAGE                                        STATUS                    PORTS
-# xxxxxxxxxxxx   mcr.microsoft.com/mssql/server:2019-latest   Up X minutes (healthy)    0.0.0.0:1433->1433/tcp
+```bash
+podman ps | grep mssql
+```
+
+You should see a `healthy` status indicator in the output, similar to this:
+
+```
+CONTAINER ID   IMAGE                                        STATUS                    PORTS
+xxxxxxxxxxxx   mcr.microsoft.com/mssql/server:2019-latest   Up X minutes (healthy)    0.0.0.0:1433->1433/tcp
 ```
 
 ### Connect to SQL Server
@@ -601,31 +605,37 @@ Now that SQL Server is installed:
 
 ---
 
-## Quick Reference
+# Quick Reference
 
-### Essential Commands
+### Essential Commands (Use for operational tasks after setup)
 
+For daily operations, use these commands:
+
+**Deployment & Status:**
 ```bash
-# Start SQL Server
-podman compose up -d
+# Start SQL Server container in detached mode
+podman compose up -d 
 
-# Stop SQL Server
+# Stop/Remove SQL Server container and networks
 podman compose down
 
-# View logs
-podman compose logs -f
+# View real-time logs (useful for monitoring startup or errors)
+podman compose logs -f sqlserver
 
-# Connect to SQL Server
+# Check current running containers status
+podman compose ps
+```
+
+**Database Operations:**
+```bash
+# Connect to SQL Server using helper script
 bash scripts/connect.sh
 
-# Backup database
+# Create a test backup of AppDB
 bash scripts/backup.sh AppDB
 
-# Restore database
+# Restore a specific database from a backup file
 bash scripts/restore.sh <backup_file> <target_db>
-
-# Check status
-podman compose ps
 ```
 
 ### Connection Details
