@@ -722,4 +722,3 @@ Start using SQL Server with:
 ```bash
 bash scripts/connect.sh
 ```
-</think>

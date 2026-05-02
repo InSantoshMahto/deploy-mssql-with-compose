@@ -73,8 +73,8 @@ services:
 
       # ════════════ PODMAN LOGGING CONFIGURATION ════════════
       # Using k8s-file driver for Podman compatibility
-      # - Check logs with: podman logs sqlserver
-      # Or: journalctl -u sqlserver -f -n 50 (systemd journal)
+      # - Check logs with: podman logs mssql-server-2019
+      # Or: journalctl -u mssql-server-2019 -f -n 50 (systemd journal)
     logging:
       driver: "k8s-file"
       options:
