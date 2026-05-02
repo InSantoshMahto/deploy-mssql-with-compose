@@ -123,15 +123,15 @@ fi
 # 7. Check volumes
 echo "7. Checking Podman volumes..."
 VOLUME_COUNT=0
-for VOLUME in mssql-2019-data mssql-2019-log mssql-2019-secrets; do
+for VOLUME in mssql-2019-data mssql-2019-log; do
     if podman volume ls | grep -q "$VOLUME"; then
          ((VOLUME_COUNT++))
     fi
 done
-if [ $VOLUME_COUNT -eq 3 ]; then
-    print_success "All 3 Podman volumes exist"
+if [ $VOLUME_COUNT -eq 2 ]; then
+    print_success "All 2 Podman volumes exist"
 else
-    print_error "Missing volumes (found $VOLUME_COUNT/3)"
+    print_error "Missing volumes (found $VOLUME_COUNT/2)"
 fi
 
 # 8. Check SQL Server connectivity

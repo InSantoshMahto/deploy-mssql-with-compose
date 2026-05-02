@@ -171,15 +171,15 @@ Opens an interactive SQL session where you can run queries.
 #### `make backup`
 Backup a database.
 
-**Executes:** `bash scripts/backup.sh DatabaseName`
+**Executes:** `bash scripts/backup.sh $(DB)`
 
 **Usage:**
-```bash
+```deploy-mssql-with-compose/MAKEFILE.md
 # Backup specific database
-make backup AppDB
+make backup DB=AppDB
 
 # Backup custom database
-make backup MyDatabase
+make backup DB=MyDatabase
 ```
 
 **What it creates:**
@@ -192,17 +192,17 @@ backups/DatabaseName_YYYYMMDD_HHMMSS.bak
 #### `make restore`
 Restore database from backup.
 
-**Executes:** `bash scripts/restore.sh backup_file.bak TargetDatabase`
+**Executes:** `bash scripts/restore.sh $(FILE) $(TARGET)`
 
 **Usage:**
-```bash
-make restore backup_file.bak TargetDatabase
+```deploy-mssql-with-compose/MAKEFILE.md
+make restore FILE=backup_file.bak TARGET=TargetDatabase
 ```
 
 **Example:**
-```bash
+```deploy-mssql-with-compose/MAKEFILE.md
 # Just use the filename (not full path)
-make restore AppDB_20260419_120000.bak AppDB_Restored
+make restore FILE=AppDB_20260419_120000.bak TARGET=AppDB_Restored
 ```
 
 ---
@@ -240,7 +240,7 @@ make clean
 ```
 
 **Preserves:**
-- Database volumes (data, logs, secrets)
+- Database volumes (data, logs)
 - Backup files
 - Podman images
 
@@ -260,7 +260,7 @@ make clean-all
 
 **Deletes:**
 - Containers
-- All volumes (database data, logs, secrets)
+- All volumes (database data, logs)
 
 **Preserves:**
 - Backup files
@@ -296,7 +296,7 @@ make start
 make connect
 
 # Backup when done
-make backup AppDB
+make backup DB=AppDB
 
 # Stop SQL Server
 make stop
@@ -390,13 +390,13 @@ make stop
 
 ```bash
 # Create backup
-make backup AppDB
+make backup DB=AppDB
 
 # Restore to new database
-make restore AppDB_20260419_120000.bak TestDB
+make restore FILE=AppDB_20260419_120000.bak TARGET=TestDB
 
 # Restore over existing database
-make restore AppDB_20260419_120000.bak AppDB
+make restore FILE=AppDB_20260419_120000.bak TARGET=AppDB
 ```
 
 ---
@@ -455,8 +455,8 @@ make setup                         # First time setup
 make start                         # Start container
 make stop                          # Stop container
 make connect                       # Connect to SQL
-make backup AppDB                  # Backup database
-make restore backup.bak TargetDB   # Restore database
+make backup DB=AppDB                  # Backup database
+make restore FILE=backup.bak TARGET=AppDB   # Restore database
 make verify                        # Health checks
 make clean                         # Remove containers
 ```

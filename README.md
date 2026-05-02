@@ -1,90 +1,33 @@
-# SQL Server 2019 Podman Setup [L1-777]
- ## 📦 What's Included [L5-18]
- ## 📋 Quick Links [L18-23]
- ## 🎯 Choose Your Path [L23-37]
-   ### Path 1: I Don't Have Podman [L25-28]
-   ### Path 2: I Have Podman [L28-31]
-   ### Path 3: Using Makefile (Recommended) [L31-34]
-   ### Path 4: Deploying to Production [L34-37]
- ## ⚡ Super Quick Start [L37-76]
-   ### Using Makefile (Recommended) [L39-56]
-   ### Using Scripts Directly [L56-76]
- ## 📋 Prerequisites [L76-84]
- ## 📁 Project Structure [L84-112]
- ## 🚀 Quick Start Guide [L112-171]
-   ### 1. Install Podman (if not already installed) [L114-129]
-   ### 2. Configure Environment [L129-142]
-   ### 3. Make Scripts Executable [L142-149]
-   ### 4. Run Setup [L149-159]
-   ### 5. Verify Installation [L159-171]
- ## 🔧 Configuration [L171-206]
-   ### Environment Variables (.env) [L173-192]
-   ### 🔑 Password Requirements [L192-206]
- ## 🎓 What You'll Get [L206-233]
-   ### 1. Running SQL Server 2019 [L210-216]
-   ### 2. Sample Database (AppDB) [L216-226]
-   ### 3. Persistent Storage [L226-233]
- ## 🗄️ Database Management [L233-285]
-   ### Connect to SQL Server [L235-252]
-   ### Create Backup [L252-271]
-   ### Restore from Backup [L271-285]
- ## 🧪 Test the Setup [L285-333]
- ## 🎮 Essential Commands [L333-364]
- ## 🐳 Podman Commands [L364-404]
-   ### Service Management [L366-391]
-   ### Complete Cleanup [L391-404]
- ## 📊 Volume Management [L404-440]
-   ### Volume Information [L406-414]
-   ### Volume Commands [L414-433]
-   ### Volume Locations (Inside Container) [L433-440]
- ## 🔍 Monitoring & Troubleshooting [L440-551]
-   ### Health Checks [L442-458]
-   ### SQL Server Information [L458-509]
-   ### Common Issues [L509-551]
-    #### Container won't start [L511-524]
-    #### Can't connect to SQL Server [L524-542]
-    #### Reset Everything [L542-551]
- ## 📝 Sample Database Schema [L551-571]
-   ### Tables [L555-563]
-   ### Views [L563-567]
-   ### Stored Procedures [L567-571]
- ## ❓ Common Questions [L571-599]
-   ### Q: Do I need to install SQL Server on my machine? [L573-576]
-   ### Q: Will my data be lost when I stop the container? [L576-579]
-   ### Q: Can I use this in production? [L579-587]
-   ### Q: How do I backup my data? [L587-590]
-   ### Q: How much disk space do I need? [L590-593]
-   ### Q: Can I change the port? [L593-596]
-   ### Q: How do I connect from my application? [L596-599]
- ## 🔒 Security Best Practices [L599-634]
- ## 🔄 Automated Backups with Cron [L634-647]
- ## 🌐 Connecting from Applications [L647-703]
-   ### .NET Connection String [L649-655]
-   ### Python (pyodbc) [L655-670]
-   ### Node.js (mssql) [L670-690]
-     const sql [L673]
-     const config [L675-685]
-      server [L676]
-      port [L677]
-      database [L678]
-      user [L679]
-      password [L680]
-      options [L681-684]
-       encrypt [L682]
-       trustServerCertificate [L683]
-     const pool [L687]
-   ### Java (JDBC) [L690-703]
- ## 🆘 Need Help? [L703-724]
-   ### Container won't start? [L705-711]
-   ### Can't connect? [L711-718]
-   ### Want to reset everything? [L718-724]
- ## 📖 Learn More [L724-731]
- ## 📚 Additional Resources [L731-739]
-## 📄 License [L739-745]
-## 🤝 Support [L745-753]
-## 🚦 Next Steps [L753-762]
-## 📋 Changelog [L762-777]
-   ### Version 1.0.0 [L764-777]
+# SQL Server 2019 Podman Setup
+
+Run SQL Server 2019 in a Podman container with persistent storage, automated initialization, backup/restore scripts, and a pre-populated sample database.
+
+## Table of Contents
+
+- [📋 Prerequisites](#-prerequisites)
+- [📁 Project Structure](#-project-structure)
+- [🚀 Quick Start Guide](#-quick-start-guide)
+- [🔧 Configuration](#-configuration)
+- [🎓 What You'll Get](#-what-youll-get)
+- [🗄️ Database Management](#️-database-management)
+- [🧪 Test the Setup](#-test-the-setup)
+- [🎮 Essential Commands](#-essential-commands)
+- [⚙️ Podman Commands](#️-podman-commands)
+- [📊 Volume Management](#-volume-management)
+- [🔍 Monitoring & Troubleshooting](#-monitoring--troubleshooting)
+- [📝 Sample Database Schema](#-sample-database-schema)
+- [❓ Common Questions](#-common-questions)
+- [🔒 Security Best Practices](#-security-best-practices)
+- [🔄 Automated Backups with Cron](#-automated-backups-with-cron)
+- [🌐 Connecting from Applications](#-connecting-from-applications)
+- [🆘 Need Help?](#-need-help)
+- [📖 Learn More](#-learn-more)
+- [📚 Additional Resources](#-additional-resources)
+- [📄 License](#-license)
+- [🤝 Support](#-support)
+- [🚦 Next Steps](#-next-steps)
+- [📋 Changelog](#-changelog)
+
 
 ## 📋 Prerequisites
 
@@ -244,7 +187,6 @@ Pre-populated with realistic data:
 Your data survives container restarts:
 - `mssql-2019-data` - Database files (.mdf)
 - `mssql-2019-log` - Transaction logs (.ldf)
-- `mssql-2019-secrets` - Certificates and keys
 - `./backups/` - Backup files (mapped to host directory)
 
 ## 🗄️ Database Management
@@ -413,7 +355,7 @@ podman compose down
 podman compose down -v
 
 # Remove specific volumes
-podman volume rm mssql-2019-data mssql-2019-log mssql-2019-secrets
+podman volume rm mssql-2019-data mssql-2019-log
 ```
 
 ## 📊 Volume Management
@@ -423,7 +365,6 @@ podman volume rm mssql-2019-data mssql-2019-log mssql-2019-secrets
 Podman volumes store persistent data:
 - **mssql-2019-data**: Database files (.mdf)
 - **mssql-2019-log**: Transaction log files (.ldf)
-- **mssql-2019-secrets**: Certificates and keys
 - `./backups/`: Backup files (mapped to host directory)
 
 ### Volume Commands
@@ -449,7 +390,6 @@ podman run --rm \
 
 - Data files: `/var/opt/mssql/data`
 - Log files: `/var/opt/mssql/log`
-- Secrets: `/var/opt/mssql/secrets`
 - Backups: `/var/opt/mssql/backups` (mapped to `./backups` on host)
 
 ## 🔍 Monitoring & Troubleshooting
@@ -559,7 +499,7 @@ sudo ufw status
 ```bash
 # Complete cleanup and fresh start
 podman compose down -v
-podman volume rm mssql-2019-data mssql-2019-log mssql-2019-secrets
+podman volume rm mssql-2019-data mssql-2019-log
 bash setup.sh
 ```
 

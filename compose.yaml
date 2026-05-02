@@ -10,11 +10,11 @@ services:
     hostname: sqlserver2019
 
     # ═══════════════ ROOTLESS MODE SUPPORT ═══════════════
-    # Uses your UID:GID for non-root operation
-    user:
-      "$(id -u):$(id -g)"
+    # Note: user UID:GID mapping is handled automatically by Podman on Linux.
+    # On macOS, the container runs in a Podman VM — no user override needed.
+    # user: "$(id -u):$(id -g)"  # Uncomment on Linux if needed
 
-      # ════════════════ RESOURCE LIMITS ════════════════════
+    # ════════════════ RESOURCE LIMITS ════════════════════
     deploy:
       resources:
         limits:

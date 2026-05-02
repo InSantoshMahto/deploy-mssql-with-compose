@@ -328,7 +328,6 @@ podman volume ls | grep mssql
 # Expected output:
 # mssql-2019-data
 # mssql-2019-log
-# mssql-2019-secrets
 ```
 
 ### Test Backup Functionality
@@ -521,7 +520,7 @@ If you need to start completely fresh:
 podman compose down
 
 # Remove all volumes (WARNING: DELETES ALL DATA!)
-podman volume rm mssql-2019-data mssql-2019-log mssql-2019-secrets
+podman volume rm mssql-2019-data mssql-2019-log
 
 # Remove all SQL Server images
 podman rmi mcr.microsoft.com/mssql/server:2019-latest

@@ -45,8 +45,8 @@ help: ## Show this help message
 
 	@echo "$(GREEN)Database Operations:$(NC)"
 	@echo "  make connect           - Connect to SQL Server (scripts/connect.sh)"
-	@echo "  make backup AppDB      - Backup database (scripts/backup.sh)"
-	@echo "  make restore backup.bak TargetDB - Restore database (scripts/restore.sh)"
+	@echo "  make backup DB=AppDB                      - Backup database (scripts/backup.sh)"
+	@echo "  make restore FILE=backup.bak TARGET=AppDB - Restore database (scripts/restore.sh)"
 	@echo "  make verify            - Run verification checks (scripts/verify.sh)"
 	@echo ""
 	@echo "$(GREEN)Cleanup:$(NC)"
@@ -96,11 +96,11 @@ logs: ## View logs (follow mode)
 connect: ## Connect to SQL Server (scripts/connect.sh)
 	@bash $(SCRIPTS_DIR)/connect.sh
 
-backup: ## Backup database (usage: make backup DatabaseName)
-	@bash $(SCRIPTS_DIR)/backup.sh $(filter-out $@,$(MAKECMDGOALS))
+backup: ## Backup database (usage: make backup DB=AppDB)
+	@bash $(SCRIPTS_DIR)/backup.sh $(DB)
 
-restore: ## Restore database (usage: make restore backup_file.bak TargetDB)
-	@bash $(SCRIPTS_DIR)/restore.sh $(filter-out $@,$(MAKECMDGOALS))
+restore: ## Restore database (usage: make restore FILE=backup.bak TARGET=AppDB)
+	@bash $(SCRIPTS_DIR)/restore.sh $(FILE) $(TARGET)
 
 verify: ## Run verification checks (scripts/verify.sh)
 	@bash $(SCRIPTS_DIR)/verify.sh
@@ -215,7 +215,7 @@ show-notes: ## Display important Podman-specific notes and considerations
 	@echo ""
 	@echo "6. COMPOSE FILE CONFIGURATION"
 	@echo "   - Uses Podman Compose v5.x compatible format"
-	@echo "   - Volumes: mssql-data, mssql-log, mssql-secrets, backups"
+	@echo "   - Volumes: mssql-data, mssql-log, backups"
 	@echo ""
 
 # Show compose file status (quick validation)

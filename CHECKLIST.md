@@ -97,10 +97,9 @@ podman inspect mssql-server-2019 | grep Health
 - [ ] AppDB database exists
 - [ ] Sample tables are created
 - [ ] Sample data is present
-- [ ] All 3 Podman volumes created:
+- [ ] All 2 Podman volumes created:
    - [ ] `mssql-2019-data`
    - [ ] `mssql-2019-log`
-   - [ ] `mssql-2019-secrets`
 
 **Verify with:**
 ```bash
