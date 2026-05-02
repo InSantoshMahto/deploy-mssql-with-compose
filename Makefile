@@ -5,7 +5,7 @@
 # ════════════════════════════════════════════════════════════════════════════
 
 .PHONY: help setup start stop restart status logs connect backup restore verify \
-        init-db clean ps validate
+        init-db clean clean-all ps validate stats show-compose quick-ref show-notes compose-status
 
 # Default target
 .DEFAULT_GOAL := help
@@ -140,7 +140,7 @@ validate: ## Validate compose.yaml configuration
 # Show Podman stats for running containers (resource usage monitoring)
 stats: ## Show current resource usage statistics for SQL Server container
 	@echo "$(BLUE)SQL Server Resource Statistics$(NC)"
-	@podman stats --no-stream sqlserver 2>/dev/null || echo "$(YELLOW)! Container not running$(NC)"
+	@podman stats --no-stream mssql-server-2019 2>/dev/null || echo "$(YELLOW)! Container not running$(NC)"
 
 # Display compose file with Podman-specific configuration
 show-compose: ## Show current compose.yaml configuration
