@@ -1,13 +1,13 @@
-# SQL Server 2019 Installation Guide
+# SQL Server 2019 Installation Guide for Podman
 
-Complete step-by-step installation guide for setting up SQL Server 2019 with Docker on Ubuntu.
+Complete step-by-step installation guide for setting up SQL Server 2019 with Podman on Ubuntu/Linux systems.
 
 ## Table of Contents
 
 - [System Requirements](#system-requirements)
-- [Step 1: Install Docker](#step-1-install-docker)
-- [Step 2: Verify Docker Compose](#step-2-verify-docker-compose)
-- [Step 3: Verify Docker Installation](#step-3-verify-docker-installation)
+- [Step 1: Install Podman](#step-1-install-podman)
+- [Step 2: Verify Podman Compose](#step-2-verify-podman-compose)
+- [Step 3: Verify Podman Installation](#step-3-verify-podman-installation)
 - [Step 4: Configure SQL Server](#step-4-configure-sql-server)
 - [Step 5: Deploy SQL Server](#step-5-deploy-sql-server)
 - [Step 6: Verify Installation](#step-6-verify-installation)
@@ -26,136 +26,92 @@ Complete step-by-step installation guide for setting up SQL Server 2019 with Doc
 
 ---
 
-## Step 1: Install Docker
+## Step 1: Install Podman
 
-### Uninstall Old Versions (if any)
+### Install Using Official Repository (Ubuntu 24.04)
+
+**1. Download the Podman repository key:**
 
 ```bash
-# Remove old Docker versions
-for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do 
-    sudo apt-get remove $pkg
-done
+curl -fsSL https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/xUbuntu_24.04/Release.key \
+  | gpg --dearmor \
+  | sudo tee /usr/share/keyrings/podman.gpg > /dev/null
 ```
 
-### Install Using apt Repository (Recommended)
-
-**1. Set up Docker's apt repository:**
+**2. Add the Podman Apt Repository:**
 
 ```bash
-# Add Docker's official GPG key:
-sudo apt-get update
-sudo apt-get install ca-certificates curl
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-sudo chmod a+r /etc/apt/keyrings/docker.asc
+# Add Podman's official Kubic repository
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/podman.gpg] \
+  https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/xUbuntu_24.04/ /" \
+  | sudo tee /etc/apt/sources.list.d/podman.list > /dev/null
 
-# Add the repository to Apt sources:
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# Update package list
 sudo apt-get update
 ```
 
-**2. Install Docker packages:**
+**3. Install Podman packages:**
 
 ```bash
-# Install the latest version
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+# Install Podman with compose plugin
+sudo apt-get install -y podman podman-compose
 ```
 
-**3. Verify installation:**
+### Configure Podman to Start on Boot
 
 ```bash
-# Run the hello-world image
-sudo docker run hello-world
+# Check if Podman service is running
+systemctl status podman.socket
+
+# Enable Podman service to start on boot (usually enabled by default)
+sudo systemctl enable podman.socket
 ```
-
-### Configure Docker Permissions
-
-```bash
-# Add your user to the docker group
-sudo usermod -aG docker $USER
-
-# Apply the new group membership
-newgrp docker
-
-# Verify you can run docker without sudo
-docker run hello-world
-```
-
-**Important:** 
-- You may need to log out and log back in for group changes to take effect
-- Alternatively, run `newgrp docker` to activate the changes immediately
-- The `docker` group grants root-equivalent privileges. See [Docker security](https://docs.docker.com/engine/security/#docker-daemon-attack-surface) for details
-
-### Configure Docker to Start on Boot
-
-```bash
-# Enable Docker service to start on boot (usually enabled by default)
-sudo systemctl enable docker.service
-sudo systemctl enable containerd.service
-
-# Check if Docker is running
-sudo systemctl status docker
-```
-
-**Note:** On most modern Linux distributions, Docker is automatically configured to start on boot after installation.
 
 ---
 
-## Step 2: Verify Docker Compose
+## Step 2: Verify Podman Compose
 
-Docker Compose is included as a plugin when you install Docker using the apt repository method.
+Podman Compose is included when you install `podman-compose` package.
 
-**Verify Docker Compose is installed:**
+**Verify Podman Compose is installed:**
 
 ```bash
-# Check Docker Compose version
-docker compose version
+# Check Podman Compose version
+podman compose version
 ```
 
 **Expected output:**
 ```
-Docker Compose version v5.1.3
+podman-compose version 1.x.x
 ```
-
-**Note:** 
-- Docker Compose v5.1.3 (plugin) comes pre-installed with the `docker-compose-plugin` package
-- The standalone V1 version (`docker-compose`) is deprecated and no longer recommended
-- Always use `docker compose` (with space) instead of `docker-compose` (with hyphen)
-- Docker Compose v5.x is part of Docker Engine 29.4.0 and uses API version 1.54
 
 ---
 
-## Step 3: Verify Docker Installation
+## Step 3: Verify Podman Installation
 
-Run these commands to ensure Docker is properly installed:
+Run these commands to ensure Podman is properly installed:
 
 ```bash
-# Check Docker version (should show 29.4.0)
-docker --version
+# Check Podman version
+podman --version
 
-# Check Docker Compose version (should show v5.1.3)
-docker compose version
+# Check Podman Compose version
+podman compose version
 
-# View Docker system information (should show API version 1.54)
-docker info
-
-# Test Docker with hello-world
-docker run --rm hello-world
+# Test Podman with hello-world
+podman run --rm hello-world
 
 # Check running containers
-docker ps
+podman ps
 
 # Check all containers (including stopped)
-docker ps -a
+podman ps -a
 
-# List Docker images
-docker images
+# List Podman images
+podman images
 
-# View Docker disk usage
-docker system df
+# View Podman disk usage
+podman system df
 ```
 
 Expected output should show version numbers and successful execution of commands.
@@ -167,7 +123,7 @@ Expected output should show version numbers and successful execution of commands
 ### Navigate to Project Directory
 
 ```bash
-cd ~/Developer/HPCL
+cd ~/deploy-mssql-with-compose
 # OR wherever you cloned/created the project
 ```
 
@@ -261,7 +217,7 @@ bash setup.sh
 ```
 
 This script will:
-1. Verify Docker installation
+1. Verify Podman installation
 2. Create necessary directories
 3. Pull SQL Server 2019 image
 4. Start the container
@@ -272,13 +228,13 @@ This script will:
 
 ```bash
 # Pull the SQL Server 2019 image
-docker compose pull
+podman compose pull
 
 # Start the container in detached mode
-docker compose up -d
+podman compose up -d
 
 # View logs to monitor startup
-docker compose logs -f sqlserver
+podman compose logs -f sqlserver
 ```
 
 **Wait for this message in logs:**
@@ -292,13 +248,13 @@ Press `Ctrl+C` to exit log view.
 
 ```bash
 # Check container status
-docker compose ps
+podman ps
 
 # View last 50 lines of logs
-docker compose logs --tail=50 sqlserver
+podman compose logs --tail=50 sqlserver
 
 # Check health status
-docker inspect mssql-server-2019 | grep -A 5 Health
+podman inspect mssql-server-2019 | grep -A 5 Health
 ```
 
 ---
@@ -307,13 +263,17 @@ docker inspect mssql-server-2019 | grep -A 5 Health
 
 ### Check Container Status
 
-```bash
-# Verify container is running
-docker ps | grep mssql
+Confirm the SQL Server container is running and healthy by checking its status:
 
-# Expected output:
-# CONTAINER ID   IMAGE                                        STATUS                    PORTS
-# xxxxxxxxxxxx   mcr.microsoft.com/mssql/server:2019-latest   Up X minutes (healthy)   0.0.0.0:1433->1433/tcp
+```bash
+podman ps | grep mssql
+```
+
+You should see a `healthy` status indicator in the output, similar to this:
+
+```
+CONTAINER ID   IMAGE                                        STATUS                    PORTS
+xxxxxxxxxxxx   mcr.microsoft.com/mssql/server:2019-latest   Up X minutes (healthy)    0.0.0.0:1433->1433/tcp
 ```
 
 ### Connect to SQL Server
@@ -327,7 +287,7 @@ bash scripts/connect.sh
 **Manual connection:**
 
 ```bash
-docker exec -it mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd \
+podman exec -it mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd \
     -C \
     -S localhost \
     -U sa \
@@ -367,12 +327,11 @@ EXIT
 
 ```bash
 # List SQL Server volumes
-docker volume ls | grep mssql
+podman volume ls | grep mssql
 
 # Expected output:
 # mssql-2019-data
 # mssql-2019-log
-# mssql-2019-secrets
 ```
 
 ### Test Backup Functionality
@@ -468,7 +427,7 @@ Connect using:
 
 **Check logs:**
 ```bash
-docker compose logs sqlserver
+podman compose logs sqlserver
 ```
 
 **Common issues:**
@@ -505,7 +464,7 @@ docker compose logs sqlserver
 
 ```bash
 # Check if container is running
-docker ps | grep mssql
+podman ps | grep mssql
 
 # Check if port is accessible
 telnet localhost 1433
@@ -519,51 +478,41 @@ sudo ufw allow 1433
 
 ### Permission Denied Errors
 
-```bash
-# Fix Docker permissions
-sudo chmod 666 /var/run/docker.sock
-
-# OR add user to docker group
-sudo usermod -aG docker $USER
-newgrp docker
-```
-
-### Scripts Not Executable
+**Note:** Podman uses SELinux/AppArmor by default and supports rootless operation via `/run/user/$(id -u)/podman/podman.sock`. Instead:
 
 ```bash
-# Make scripts executable
-chmod +x scripts/*.sh
-chmod +x setup.sh
+# Check if running as root
+whoami
+
+# If not root, ensure proper permissions in compose.yaml
+# Restart the container with appropriate privileges
+sudo podman compose up -d
 ```
 
-### Docker Compose Command Issues
+### Podman Compose Command Issues
 
-Always use the modern Docker Compose v5 (plugin) syntax:
+Always use the modern Podman Compose v5 (plugin) syntax:
 ```bash
 # Correct - v5.1.3 plugin syntax (recommended)
-docker compose up -d
+podman compose up -d
 
-# Deprecated - V1 standalone syntax (avoid)
-docker-compose up -d
+# Avoid using standalone podman-compose (deprecated)
+# podman-compose up -d
 ```
 
-If `docker compose` doesn't work, ensure the plugin is installed:
-```bash
-sudo apt-get install -y docker-compose-plugin
-
 # Verify installation
-docker compose version
-# Expected: Docker Compose version v5.1.3
+podman compose version
+# Expected: Podman Compose version v2.x.x
 ```
 
 ### Health Check Failing
 
 ```bash
 # Check detailed health status
-docker inspect mssql-server-2019 | grep -A 20 Health
+podman inspect mssql-server-2019 | grep -A 20 Health
 
 # View SQL Server error log
-docker exec mssql-server-2019 cat /var/opt/mssql/log/errorlog | tail -50
+podman exec mssql-server-2019 cat /var/opt/mssql/log/errorlog | tail -50
 ```
 
 ### Reset Everything
@@ -572,16 +521,16 @@ If you need to start completely fresh:
 
 ```bash
 # Stop and remove containers
-docker compose down
+podman compose down
 
 # Remove all volumes (WARNING: DELETES ALL DATA!)
-docker volume rm mssql-2019-data mssql-2019-log mssql-2019-secrets
+podman volume rm mssql-2019-data mssql-2019-log
 
 # Remove all SQL Server images
-docker rmi mcr.microsoft.com/mssql/server:2019-latest
+podman rmi mcr.microsoft.com/mssql/server:2019-latest
 
 # Start fresh
-docker compose up -d
+podman compose up -d
 ```
 
 ---
@@ -628,17 +577,17 @@ GO
 crontab -e
 
 # Add daily backup at 2 AM
-0 2 * * * cd ~/Developer/HPCL && bash scripts/backup.sh AppDB >> /var/log/sqlserver-backup.log 2>&1
+0 2 * * * cd ~/deploy-mssql-with-compose && bash scripts/backup.sh AppDB >> /var/log/sqlserver-backup.log 2>&1
 ```
 
 ### 4. Configure Monitoring
 
 ```bash
 # Monitor container health
-watch -n 5 'docker ps | grep mssql'
+watch -n 5 'podman ps | grep mssql'
 
 # Monitor container resources
-docker stats mssql-server-2019
+podman stats mssql-server-2019
 ```
 
 ---
@@ -656,31 +605,37 @@ Now that SQL Server is installed:
 
 ---
 
-## Quick Reference
+# Quick Reference
 
-### Essential Commands
+### Essential Commands (Use for operational tasks after setup)
 
+For daily operations, use these commands:
+
+**Deployment & Status:**
 ```bash
-# Start SQL Server
-docker compose up -d
+# Start SQL Server container in detached mode
+podman compose up -d 
 
-# Stop SQL Server
-docker compose down
+# Stop/Remove SQL Server container and networks
+podman compose down
 
-# View logs
-docker compose logs -f
+# View real-time logs (useful for monitoring startup or errors)
+podman compose logs -f sqlserver
 
-# Connect to SQL Server
+# Check current running containers status
+podman compose ps
+```
+
+**Database Operations:**
+```bash
+# Connect to SQL Server using helper script
 bash scripts/connect.sh
 
-# Backup database
+# Create a test backup of AppDB
 bash scripts/backup.sh AppDB
 
-# Restore database
+# Restore a specific database from a backup file
 bash scripts/restore.sh <backup_file> <target_db>
-
-# Check status
-docker compose ps
 ```
 
 ### Connection Details
@@ -709,7 +664,7 @@ make stop
 make connect
 
 # Backup AppDB
-make backup-appdb
+make backup AppDB
 
 # Check status
 make status
@@ -742,14 +697,8 @@ make restart
 # Initialize database
 make init-db
 
-# List backups
-make backup-list
-
 # Restore backup
-make restore FILE=AppDB_20260419_120000.bak DB=AppDB
-
-# Show system info
-make info
+make restore AppDB_20260419_120000.bak AppDB
 
 # Monitor resources
 make stats
@@ -764,15 +713,14 @@ See **[MAKEFILE.md](MAKEFILE.md)** for complete Makefile documentation.
 - **Project README**: `README.md` in this directory
 - **Makefile Documentation**: `MAKEFILE.md` for all make commands
 - **SQL Server Documentation**: https://docs.microsoft.com/en-us/sql/
-- **Docker Documentation**: https://docs.docker.com/
-- **Docker Install Ubuntu**: https://docs.docker.com/engine/install/ubuntu/
+- **Podman Documentation**: https://podman.io/
 - **Ubuntu Help**: https://help.ubuntu.com/
 
 ---
 
 ## Installation Complete! 🎉
 
-You now have a fully functional SQL Server 2019 instance running in Docker with:
+You now have a fully functional SQL Server 2019 instance running in Podman with:
 
 ✅ Persistent data storage  
 ✅ Automated initialization  

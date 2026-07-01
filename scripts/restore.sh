@@ -26,7 +26,7 @@ echo "Target database: ${TARGET_DB}"
 echo ""
 
 # Check if container is running
-if ! docker ps | grep -q mssql-server-2019; then
+if ! podman ps | grep -q mssql-server-2019; then
     echo "Error: SQL Server container is not running!"
     exit 1
 fi
@@ -41,10 +41,10 @@ fi
 echo "Detecting logical file names from backup..."
 
 # Get logical names (first line is data file, second is log file)
-LOGICAL_NAMES=$(docker exec -i mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd \
+LOGICAL_NAMES=$(podman exec -i mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd \
     -C -S localhost -U sa -P "${SA_PASSWORD}" \
-    -h -1 -W \
-    -Q "SET NOCOUNT ON; RESTORE FILELISTONLY FROM DISK = N'/var/opt/mssql/backups/${BACKUP_FILE}'" 2>/dev/null | awk 'NF {print $1}')
+     -h -1 -W \
+     -Q "SET NOCOUNT ON; RESTORE FILELISTONLY FROM DISK = N'/var/opt/mssql/backups/${BACKUP_FILE}'" 2>/dev/null | awk 'NF {print $1}')
 
 DATA_LOGICAL=$(echo "$LOGICAL_NAMES" | head -1)
 LOG_LOGICAL=$(echo "$LOGICAL_NAMES" | tail -1)
@@ -56,14 +56,14 @@ fi
 
 echo "Detected logical names:"
 echo "  Data file: ${DATA_LOGICAL}"
-echo "  Log file:  ${LOG_LOGICAL}"
+echo "  Log file:   ${LOG_LOGICAL}"
 echo ""
 echo "Starting restore..."
 
 # Restore database with MOVE using detected logical names
-docker exec -i mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd \
+podman exec -i mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd \
     -C -S localhost -U sa -P "${SA_PASSWORD}" \
-    -Q "RESTORE DATABASE [${TARGET_DB}] FROM DISK = N'/var/opt/mssql/backups/${BACKUP_FILE}' WITH MOVE '${DATA_LOGICAL}' TO '/var/opt/mssql/data/${TARGET_DB}.mdf', MOVE '${LOG_LOGICAL}' TO '/var/opt/mssql/data/${TARGET_DB}_log.ldf', REPLACE, STATS = 10"
+     -Q "RESTORE DATABASE [${TARGET_DB}] FROM DISK = N'/var/opt/mssql/backups/${BACKUP_FILE}' WITH MOVE '${DATA_LOGICAL}' TO '/var/opt/mssql/data/${TARGET_DB}.mdf', MOVE '${LOG_LOGICAL}' TO '/var/opt/mssql/data/${TARGET_DB}_log.ldf', REPLACE, STATS = 10"
 
 if [ $? -eq 0 ]; then
     echo ""

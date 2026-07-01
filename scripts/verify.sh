@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # SQL Server 2019 Verification Script
-# This script checks if SQL Server is properly installed and running
+# This script checks if SQL Server is properly installed and running using Podman
 
 echo "=========================================="
 echo "SQL Server 2019 Health Check"
@@ -29,13 +29,13 @@ CHECKS_FAILED=0
 # Function to print success
 print_success() {
     echo -e "${GREEN}✓${NC} $1"
-    ((CHECKS_PASSED++))
+     ((CHECKS_PASSED++))
 }
 
 # Function to print error
 print_error() {
     echo -e "${RED}✗${NC} $1"
-    ((CHECKS_FAILED++))
+     ((CHECKS_FAILED++))
 }
 
 # Function to print warning
@@ -46,39 +46,40 @@ print_warning() {
 echo "Running system checks..."
 echo ""
 
-# 1. Check Docker installation
-echo "1. Checking Docker..."
-if command -v docker &> /dev/null; then
-    DOCKER_VERSION=$(docker --version)
-    print_success "Docker is installed: $DOCKER_VERSION"
+# 1. Check Podman installation
+echo "1. Checking Podman..."
+if command -v podman &> /dev/null; then
+    PODMAN_VERSION=$(podman --version)
+    print_success "Podman is installed: $PODMAN_VERSION"
 else
-    print_error "Docker is not installed"
+    print_error "Podman is not installed"
+    echo "   Install from: https://podman.io/getting-started/installation"
 fi
 
-# 2. Check Docker Compose installation
-echo "2. Checking Docker Compose..."
-if docker compose version &> /dev/null 2>&1; then
-    COMPOSE_VERSION=$(docker compose version)
-    print_success "Docker Compose is installed: $COMPOSE_VERSION"
+# 2. Check Podman Compose installation
+echo "2. Checking Podman Compose..."
+if podman compose version &> /dev/null 2>&1; then
+    COMPOSE_VERSION=$(podman compose version)
+    print_success "Podman Compose is installed: $COMPOSE_VERSION"
 else
-    print_error "Docker Compose is not installed"
+    print_error "Podman Compose is not installed"
 fi
 
 # 3. Check if container exists
 echo "3. Checking SQL Server container..."
-if docker ps -a --format '{{.Names}}' | grep -q "mssql-server-2019"; then
+if podman ps -a --format '{{.Names}}' | grep -q "mssql-server-2019"; then
     print_success "SQL Server container exists"
 
-    # Check if running
-    if docker ps --format '{{.Names}}' | grep -q "mssql-server-2019"; then
+     # Check if running
+    if podman ps --format '{{.Names}}' | grep -q "mssql-server-2019"; then
         print_success "SQL Server container is running"
 
-        # Get container uptime
-        UPTIME=$(docker ps --format '{{.Status}}' --filter "name=mssql-server-2019")
-        echo "   Status: $UPTIME"
+         # Get container status
+        STATUS=$(podman ps --format '{{.Status}}' --filter "name=mssql-server-2019")
+        echo "   Status: $STATUS"
     else
         print_error "SQL Server container exists but is not running"
-        echo "   Run: docker compose up -d"
+        echo "   Run: podman compose up -d"
     fi
 else
     print_error "SQL Server container not found"
@@ -87,8 +88,8 @@ fi
 
 # 4. Check health status
 echo "4. Checking container health..."
-if docker ps --format '{{.Names}}' | grep -q "mssql-server-2019"; then
-    HEALTH=$(docker inspect --format='{{.State.Health.Status}}' mssql-server-2019 2>/dev/null)
+if podman ps --format '{{.Names}}' | grep -q "mssql-server-2019"; then
+    HEALTH=$(podman inspect --format='{{.State.Health.Status}}' mssql-server-2019 2>/dev/null)
     if [ "$HEALTH" = "healthy" ]; then
         print_success "Container is healthy"
     elif [ "$HEALTH" = "starting" ]; then
@@ -100,8 +101,8 @@ fi
 
 # 5. Check port binding
 echo "5. Checking port binding..."
-if docker ps --format '{{.Names}}' | grep -q "mssql-server-2019"; then
-    PORT_BINDING=$(docker port mssql-server-2019 1433 2>/dev/null)
+if podman ps --format '{{.Names}}' | grep -q "mssql-server-2019"; then
+    PORT_BINDING=$(podman port mssql-server-2019 1433 2>/dev/null)
     if [ ! -z "$PORT_BINDING" ]; then
         print_success "Port 1433 is bound to: $PORT_BINDING"
     else
@@ -120,23 +121,23 @@ else
 fi
 
 # 7. Check volumes
-echo "7. Checking Docker volumes..."
+echo "7. Checking Podman volumes..."
 VOLUME_COUNT=0
-for VOLUME in mssql-2019-data mssql-2019-log mssql-2019-secrets; do
-    if docker volume ls | grep -q "$VOLUME"; then
-        ((VOLUME_COUNT++))
+for VOLUME in mssql-2019-data mssql-2019-log; do
+    if podman volume ls | grep -q "$VOLUME"; then
+         ((VOLUME_COUNT++))
     fi
 done
-if [ $VOLUME_COUNT -eq 3 ]; then
-    print_success "All 3 Docker volumes exist"
+if [ $VOLUME_COUNT -eq 2 ]; then
+    print_success "All 2 Podman volumes exist"
 else
-    print_error "Missing volumes (found $VOLUME_COUNT/3)"
+    print_error "Missing volumes (found $VOLUME_COUNT/2)"
 fi
 
 # 8. Check SQL Server connectivity
 echo "8. Testing SQL Server connection..."
-if docker ps --format '{{.Names}}' | grep -q "mssql-server-2019"; then
-    if docker exec mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P "${SA_PASSWORD}" -Q "SELECT 1" -b -o /dev/null 2>/dev/null; then
+if podman ps --format '{{.Names}}' | grep -q "mssql-server-2019"; then
+    if podman exec mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P "${SA_PASSWORD}" -Q "SELECT 1" -b -o /dev/null 2>/dev/null; then
         print_success "SQL Server is accepting connections"
     else
         print_error "Cannot connect to SQL Server"
@@ -146,13 +147,13 @@ fi
 
 # 9. Check if AppDB exists
 echo "9. Checking AppDB database..."
-if docker ps --format '{{.Names}}' | grep -q "mssql-server-2019"; then
-    DB_CHECK=$(docker exec mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P "${SA_PASSWORD}" -Q "SELECT DB_ID('AppDB')" -h -1 2>/dev/null | tr -d ' \n\r')
+if podman ps --format '{{.Names}}' | grep -q "mssql-server-2019"; then
+    DB_CHECK=$(podman exec mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P "${SA_PASSWORD}" -Q "SELECT DB_ID('AppDB')" -h -1 2>/dev/null | tr -d ' \n\r')
     if [ ! -z "$DB_CHECK" ] && [ "$DB_CHECK" != "NULL" ]; then
         print_success "AppDB database exists (ID: $DB_CHECK)"
 
-        # Count tables
-        TABLE_COUNT=$(docker exec mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P "${SA_PASSWORD}" -d AppDB -Q "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE'" -h -1 2>/dev/null | tr -d ' \n\r')
+         # Count tables
+        TABLE_COUNT=$(podman exec mssql-server-2019 /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P "${SA_PASSWORD}" -d AppDB -Q "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE'" -h -1 2>/dev/null | tr -d ' \n\r')
         if [ ! -z "$TABLE_COUNT" ]; then
             echo "   Tables found: $TABLE_COUNT"
         fi
@@ -170,8 +171,8 @@ fi
 
 # 11. Check memory usage
 echo "11. Checking container memory..."
-if docker ps --format '{{.Names}}' | grep -q "mssql-server-2019"; then
-    MEM_USAGE=$(docker stats --no-stream --format "{{.MemUsage}}" mssql-server-2019 2>/dev/null)
+if podman ps --format '{{.Names}}' | grep -q "mssql-server-2019"; then
+    MEM_USAGE=$(podman stats --no-stream --format "{{.MemUsage}}" mssql-server-2019 2>/dev/null)
     if [ ! -z "$MEM_USAGE" ]; then
         print_success "Memory usage: $MEM_USAGE"
     fi
@@ -203,7 +204,7 @@ SCRIPT_COUNT=0
 for SCRIPT in "${HELPER_SCRIPTS[@]}"; do
     if [ -f "./scripts/$SCRIPT" ]; then
         if [ -x "./scripts/$SCRIPT" ]; then
-            ((SCRIPT_COUNT++))
+             ((SCRIPT_COUNT++))
         else
             print_warning "scripts/$SCRIPT exists but is not executable"
         fi
@@ -220,7 +221,7 @@ echo "15. Checking configuration..."
 if [ -f ".env" ]; then
     print_success ".env file exists"
 
-    # Check if password is default
+     # Check if password is default
     if grep -q "SA_PASSWORD=MyStrong@Pass123" .env; then
         print_warning "You are using the default password - consider changing it"
     fi
@@ -247,17 +248,17 @@ if [ $CHECKS_FAILED -eq 0 ]; then
     echo "Quick commands:"
     echo "  Connect:    bash scripts/connect.sh"
     echo "  Backup:     bash scripts/backup.sh"
-    echo "  View logs:  docker compose logs -f"
-    echo "  Stop:       docker compose down"
+    echo "  View logs:  podman compose logs -f"
+    echo "  Stop:       podman compose down"
     echo ""
     exit 0
 else
     echo -e "${RED}✗ Issues detected - see errors above${NC}"
     echo ""
     echo "Common fixes:"
-    echo "  Start SQL Server:  docker compose up -d"
-    echo "  View logs:         docker compose logs"
-    echo "  Reset everything:  docker compose down -v && bash setup.sh"
+    echo "  Start SQL Server:  podman compose up -d"
+    echo "  View logs:         podman compose logs"
+    echo "  Reset everything:  podman compose down -v && bash setup.sh"
     echo ""
     exit 1
 fi
